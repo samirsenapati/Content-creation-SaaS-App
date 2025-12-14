@@ -1,0 +1,8 @@
+# Server should start
+npm start
+
+# These endpoints should respond (test with curl or browser):
+# GET  http://localhost:3000/          → Should serve index.html
+# POST http://localhost:3000/api/auth/register  → Should accept JSON
+# POST http://localhost:3000/api/auth/login     → Should return JWT
+# GET  http://localhost:3000/api/todos          → Should require auth
