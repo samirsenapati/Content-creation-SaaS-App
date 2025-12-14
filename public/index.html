@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ContentCraft - AI-Powered Content Creation</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loading-overlay">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <p>Loading ContentCraft...</p>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Auth Pages -->
+  <div class="auth-wrapper" id="auth-wrapper">
+    <div class="auth-background">
+      <div class="auth-shape auth-shape-1"></div>
+      <div class="auth-shape auth-shape-2"></div>
+      <div class="auth-shape auth-shape-3"></div>
+    </div>
+    
+    <!-- Login Page -->
+    <div class="auth-container" id="login-page">
+      <div class="auth-card">
+        <div class="auth-header">
+          <div class="auth-logo">✍️</div>
+          <h1>Welcome to ContentCraft</h1>
+          <p>AI-powered content creation for writers</p>
+        </div>
+        
+        <form class="auth-form" id="login-form">
+          <div class="form-group">
+            <label for="login-email">Email</label>
+            <input type="email" id="login-email" placeholder="Enter your email" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="login-password">Password</label>
+            <div class="password-input">
+              <input type="password" id="login-password" placeholder="Enter your password" required>
+              <button type="button" class="toggle-password" onclick="togglePassword('login-password')">👁️</button>
+            </div>
+          </div>
+          
+          <div class="form-error" id="login-error"></div>
+          
+          <button type="submit" class="btn btn-primary btn-full">
+            Sign In
+            <span class="btn-arrow">→</span>
+          </button>
+        </form>
+        
+        <p class="auth-switch">
+          Don't have an account? <a href="#" onclick="showRegister(event)">Create one</a>
+        </p>
+      </div>
+    </div>
+    
+    <!-- Register Page -->
+    <div class="auth-container hidden" id="register-page">
+      <div class="auth-card">
+        <div class="auth-header">
+          <div class="auth-logo">✨</div>
+          <h1>Create Account</h1>
+          <p>Start creating amazing content today</p>
+        </div>
+        
+        <form class="auth-form" id="register-form">
+          <div class="form-group">
+            <label for="register-name">Full Name</label>
+            <input type="text" id="register-name" placeholder="Enter your name" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="register-email">Email</label>
+            <input type="email" id="register-email" placeholder="Enter your email" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="register-password">Password</label>
+            <div class="password-input">
+              <input type="password" id="register-password" placeholder="Create a password" minlength="6" required>
+              <button type="button" class="toggle-password" onclick="togglePassword('register-password')">👁️</button>
+            </div>
+          </div>
+          
+          <div class="form-error" id="register-error"></div>
+          
+          <button type="submit" class="btn btn-primary btn-full">
+            Create Account
+            <span class="btn-arrow">→</span>
+          </button>
+        </form>
+        
+        <p class="auth-switch">
+          Already have an account? <a href="#" onclick="showLogin(event)">Sign in</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main App -->
+  <div class="app-wrapper hidden" id="app-wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <span class="logo-icon">✍️</span>
+          <span class="logo-text">ContentCraft</span>
+        </div>
+        <button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-view="dashboard" onclick="switchView('dashboard')">
+          <span class="nav-icon">🏠</span>
+          <span class="nav-text">Dashboard</span>
+        </button>
+        <button class="nav-item" data-view="documents" onclick="switchView('documents')">
+          <span class="nav-icon">📄</span>
+          <span class="nav-text">Documents</span>
+        </button>
+        <button class="nav-item" data-view="projects" onclick="switchView('projects')">
+          <span class="nav-icon">📁</span>
+          <span class="nav-text">Projects</span>
+        </button>
+        <button class="nav-item" data-view="templates" onclick="switchView('templates')">
+          <span class="nav-icon">📋</span>
+          <span class="nav-text">Templates</span>
+        </button>
+        <button class="nav-item" data-view="ai-assistant" onclick="switchView('ai-assistant')">
+          <span class="nav-icon">🤖</span>
+          <span class="nav-text">AI Assistant</span>
+        </button>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <div class="usage-card">
+          <div class="usage-header">
+            <span>AI Words</span>
+            <span id="usage-count">0 / 10,000</span>
+          </div>
+          <div class="usage-bar">
+            <div class="usage-fill" id="usage-fill" style="width: 0%"></div>
+          </div>
+          <button class="btn btn-small btn-outline" onclick="showUpgradeModal()">Upgrade</button>
+        </div>
+        
+        <div class="user-card" onclick="toggleUserMenu()">
+          <div class="user-avatar" id="sidebar-avatar">U</div>
+          <div class="user-info">
+            <span class="user-name" id="sidebar-name">User</span>
+            <span class="user-plan" id="sidebar-plan">Free Plan</span>
+          </div>
+          <span class="user-menu-arrow">▼</span>
+        </div>
+        
+        <div class="user-dropdown hidden" id="user-dropdown">
+          <button onclick="showSettings()">⚙️ Settings</button>
+          <button onclick="logout()">🚪 Sign Out</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Dashboard View -->
+      <div class="view active" id="dashboard-view">
+        <header class="view-header">
+          <div>
+            <h1>Welcome back, <span id="welcome-name">User</span>! 👋</h1>
+            <p>Here's what's happening with your content</p>
+          </div>
+          <button class="btn btn-primary" onclick="createNewDocument()">
+            <span>+ New Document</span>
+          </button>
+        </header>
+        
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">📄</div>
+            <div class="stat-info">
+              <span class="stat-value" id="stat-documents">0</span>
+              <span class="stat-label">Documents</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">📁</div>
+            <div class="stat-info">
+              <span class="stat-value" id="stat-projects">0</span>
+              <span class="stat-label">Projects</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">📝</div>
+            <div class="stat-info">
+              <span class="stat-value" id="stat-words">0</span>
+              <span class="stat-label">Words Written</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🤖</div>
+            <div class="stat-info">
+              <span class="stat-value" id="stat-ai-words">0</span>
+              <span class="stat-label">AI Words Used</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="dashboard-grid">
+          <section class="dashboard-section">
+            <div class="section-header">
+              <h2>📝 Recent Documents</h2>
+              <a href="#" onclick="switchView('documents'); return false;">View all →</a>
+            </div>
+            <div class="recent-list" id="recent-documents">
+              <div class="empty-state">
+                <span class="empty-icon">📄</span>
+                <p>No documents yet</p>
+                <button class="btn btn-small btn-primary" onclick="createNewDocument()">Create your first</button>
+              </div>
+            </div>
+          </section>
+          
+          <section class="dashboard-section">
+            <div class="section-header">
+              <h2>⚡ Quick Actions</h2>
+            </div>
+            <div class="quick-actions">
+              <button class="quick-action-btn" onclick="createNewDocument()">
+                <span class="qa-icon">📄</span>
+                <span>New Document</span>
+              </button>
+              <button class="quick-action-btn" onclick="createNewProject()">
+                <span class="qa-icon">📁</span>
+                <span>New Project</span>
+              </button>
+              <button class="quick-action-btn" onclick="switchView('templates')">
+                <span class="qa-icon">📋</span>
+                <span>Use Template</span>
+              </button>
+              <button class="quick-action-btn" onclick="switchView('ai-assistant')">
+                <span class="qa-icon">🤖</span>
+                <span>AI Assistant</span>
+              </button>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <!-- Documents View -->
+      <div class="view" id="documents-view">
+        <header class="view-header">
+          <div>
+            <h1>📄 Documents</h1>
+            <p>Manage all your content in one place</p>
+          </div>
+          <button class="btn btn-primary" onclick="createNewDocument()">
+            <span>+ New Document</span>
+          </button>
+        </header>
+        
+        <div class="filters-bar">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="doc-search" placeholder="Search documents..." oninput="filterDocuments()">
+          </div>
+          <select id="doc-filter-status" onchange="filterDocuments()">
+            <option value="">All Status</option>
+            <option value="draft">Draft</option>
+            <option value="published">Published</option>
+            <option value="archived">Archived</option>
+          </select>
+          <select id="doc-filter-type" onchange="filterDocuments()">
+            <option value="">All Types</option>
+            <option value="article">Article</option>
+            <option value="blog">Blog Post</option>
+            <option value="email">Email</option>
+            <option value="social">Social Media</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        
+        <div class="documents-grid" id="documents-grid">
+          <!-- Documents will be loaded here -->
+        </div>
+      </div>
+
+      <!-- Projects View -->
+      <div class="view" id="projects-view">
+        <header class="view-header">
+          <div>
+            <h1>📁 Projects</h1>
+            <p>Organize your content into projects</p>
+          </div>
+          <button class="btn btn-primary" onclick="createNewProject()">
+            <span>+ New Project</span>
+          </button>
+        </header>
+        
+        <div class="projects-grid" id="projects-grid">
+          <!-- Projects will be loaded here -->
+        </div>
+      </div>
+
+      <!-- Templates View -->
+      <div class="view" id="templates-view">
+        <header class="view-header">
+          <div>
+            <h1>📋 Templates</h1>
+            <p>Start with proven content structures</p>
+          </div>
+          <button class="btn btn-primary" onclick="createNewTemplate()">
+            <span>+ Create Template</span>
+          </button>
+        </header>
+        
+        <div class="template-categories">
+          <button class="category-btn active" data-category="" onclick="filterTemplates('')">All</button>
+          <button class="category-btn" data-category="blog" onclick="filterTemplates('blog')">Blog</button>
+          <button class="category-btn" data-category="marketing" onclick="filterTemplates('marketing')">Marketing</button>
+          <button class="category-btn" data-category="email" onclick="filterTemplates('email')">Email</button>
+          <button class="category-btn" data-category="social" onclick="filterTemplates('social')">Social</button>
+          <button class="category-btn" data-category="business" onclick="filterTemplates('business')">Business</button>
+        </div>
+        
+        <div class="templates-grid" id="templates-grid">
+          <!-- Templates will be loaded here -->
+        </div>
+      </div>
+
+      <!-- AI Assistant View -->
+      <div class="view" id="ai-assistant-view">
+        <header class="view-header">
+          <div>
+            <h1>🤖 AI Writing Assistant</h1>
+            <p>Let AI help you create better content</p>
+          </div>
+        </header>
+        
+        <div class="ai-container">
+          <div class="ai-tools">
+            <h3>Writing Tools</h3>
+            <div class="ai-tools-grid">
+              <button class="ai-tool-btn" onclick="selectAITool('expand')">
+                <span class="tool-icon">📈</span>
+                <span class="tool-name">Expand</span>
+                <span class="tool-desc">Make text longer</span>
+              </button>
+              <button class="ai-tool-btn" onclick="selectAITool('summarize')">
+                <span class="tool-icon">📉</span>
+                <span class="tool-name">Summarize</span>
+                <span class="tool-desc">Condense content</span>
+              </button>
+              <button class="ai-tool-btn" onclick="selectAITool('improve')">
+                <span class="tool-icon">✨</span>
+                <span class="tool-name">Improve</span>
+                <span class="tool-desc">Enhance writing</span>
+              </button>
+              <button class="ai-tool-btn" onclick="selectAITool('headline')">
+                <span class="tool-icon">📰</span>
+                <span class="tool-name">Headlines</span>
+                <span class="tool-desc">Generate titles</span>
+              </button>
+              <button class="ai-tool-btn" onclick="selectAITool('outline')">
+                <span class="tool-icon">📝</span>
+                <span class="tool-name">Outline</span>
+                <span class="tool-desc">Create structure</span>
+              </button>
+              <button class="ai-tool-btn" onclick="selectAITool('continue')">
+                <span class="tool-icon">➡️</span>
+                <span class="tool-name">Continue</span>
+                <span class="tool-desc">Keep writing</span>
+              </button>
+              <button class="ai-tool-btn" onclick="selectAITool('rewrite')">
+                <span class="tool-icon">🔄</span>
+                <span class="tool-name">Rewrite</span>
+                <span class="tool-desc">Fresh perspective</span>
+              </button>
+            </div>
+          </div>
+          
+          <div class="ai-workspace">
+            <div class="ai-input-section">
+              <label for="ai-context">Your Content (optional context)</label>
+              <textarea id="ai-context" placeholder="Paste your existing content here for context..."></textarea>
+            </div>
+            
+            <div class="ai-input-section">
+              <label for="ai-prompt">What would you like to create?</label>
+              <textarea id="ai-prompt" placeholder="Describe what you want to write about..."></textarea>
+            </div>
+            
+            <div class="ai-actions">
+              <span class="selected-tool" id="selected-tool">No tool selected</span>
+              <button class="btn btn-primary" id="ai-generate-btn" onclick="generateAIContent()">
+                <span>✨ Generate</span>
+              </button>
+            </div>
+            
+            <div class="ai-output-section">
+              <div class="ai-output-header">
+                <label>AI Output</label>
+                <div class="ai-output-actions">
+                  <button class="btn btn-small btn-outline" onclick="copyAIOutput()">📋 Copy</button>
+                  <button class="btn btn-small btn-outline" onclick="createDocFromAI()">📄 Create Doc</button>
+                </div>
+              </div>
+              <div class="ai-output" id="ai-output">
+                <p class="ai-placeholder">AI-generated content will appear here...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Editor View -->
+      <div class="view" id="editor-view">
+        <header class="editor-header">
+          <button class="btn btn-ghost" onclick="closeEditor()">← Back</button>
+          <div class="editor-title-wrapper">
+            <input type="text" id="editor-title" placeholder="Untitled Document" class="editor-title-input">
+          </div>
+          <div class="editor-actions">
+            <select id="editor-status">
+              <option value="draft">Draft</option>
+              <option value="published">Published</option>
+              <option value="archived">Archived</option>
+            </select>
+            <button class="btn btn-outline" onclick="saveDocument()">💾 Save</button>
+            <button class="btn btn-primary" onclick="saveDocument(true)">✓ Save & Close</button>
+          </div>
+        </header>
+        
+        <div class="editor-container">
+          <div class="editor-sidebar">
+            <div class="editor-meta">
+              <div class="meta-item">
+                <label>Project</label>
+                <select id="editor-project">
+                  <option value="">No Project</option>
+                </select>
+              </div>
+              <div class="meta-item">
+                <label>Content Type</label>
+                <select id="editor-type">
+                  <option value="article">Article</option>
+                  <option value="blog">Blog Post</option>
+                  <option value="email">Email</option>
+                  <option value="social">Social Media</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div class="meta-item">
+                <label>Word Count</label>
+                <span id="editor-word-count">0 words</span>
+              </div>
+            </div>
+            
+            <div class="editor-ai-tools">
+              <h4>🤖 AI Quick Tools</h4>
+              <button class="ai-quick-btn" onclick="quickAI('expand')">📈 Expand Selection</button>
+              <button class="ai-quick-btn" onclick="quickAI('improve')">✨ Improve Writing</button>
+              <button class="ai-quick-btn" onclick="quickAI('continue')">➡️ Continue Writing</button>
+              <button class="ai-quick-btn" onclick="quickAI('summarize')">📉 Summarize</button>
+            </div>
+          </div>
+          
+          <div class="editor-main">
+            <div class="editor-toolbar">
+              <button onclick="formatText('bold')" title="Bold"><b>B</b></button>
+              <button onclick="formatText('italic')" title="Italic"><i>I</i></button>
+              <button onclick="formatText('underline')" title="Underline"><u>U</u></button>
+              <span class="toolbar-divider"></span>
+              <button onclick="formatText('h1')" title="Heading 1">H1</button>
+              <button onclick="formatText('h2')" title="Heading 2">H2</button>
+              <button onclick="formatText('h3')" title="Heading 3">H3</button>
+              <span class="toolbar-divider"></span>
+              <button onclick="formatText('ul')" title="Bullet List">• List</button>
+              <button onclick="formatText('ol')" title="Numbered List">1. List</button>
+              <button onclick="formatText('quote')" title="Quote">❝ Quote</button>
+              <span class="toolbar-divider"></span>
+              <button onclick="formatText('link')" title="Link">🔗 Link</button>
+            </div>
+            <textarea id="editor-content" placeholder="Start writing your masterpiece..."></textarea>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modals -->
+  <div class="modal-overlay hidden" id="modal-overlay" onclick="closeModal()"></div>
+  
+  <!-- New Project Modal -->
+  <div class="modal hidden" id="project-modal">
+    <div class="modal-header">
+      <h2 id="project-modal-title">New Project</h2>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <form id="project-form" onsubmit="saveProject(event)">
+      <div class="form-group">
+        <label for="project-name">Project Name</label>
+        <input type="text" id="project-name" placeholder="Enter project name" required>
+      </div>
+      <div class="form-group">
+        <label for="project-description">Description</label>
+        <textarea id="project-description" placeholder="What's this project about?"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Color</label>
+        <div class="color-picker">
+          <button type="button" class="color-option active" data-color="#6366f1" style="background: #6366f1"></button>
+          <button type="button" class="color-option" data-color="#8b5cf6" style="background: #8b5cf6"></button>
+          <button type="button" class="color-option" data-color="#ec4899" style="background: #ec4899"></button>
+          <button type="button" class="color-option" data-color="#f43f5e" style="background: #f43f5e"></button>
+          <button type="button" class="color-option" data-color="#f97316" style="background: #f97316"></button>
+          <button type="button" class="color-option" data-color="#eab308" style="background: #eab308"></button>
+          <button type="button" class="color-option" data-color="#22c55e" style="background: #22c55e"></button>
+          <button type="button" class="color-option" data-color="#14b8a6" style="background: #14b8a6"></button>
+        </div>
+      </div>
+      <input type="hidden" id="project-id">
+      <input type="hidden" id="project-color" value="#6366f1">
+      <div class="modal-actions">
+        <button type="button" class="btn btn-outline" onclick="closeModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Project</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Template Modal -->
+  <div class="modal hidden" id="template-modal">
+    <div class="modal-header">
+      <h2 id="template-modal-title">New Template</h2>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <form id="template-form" onsubmit="saveTemplate(event)">
+      <div class="form-group">
+        <label for="template-name">Template Name</label>
+        <input type="text" id="template-name" placeholder="Enter template name" required>
+      </div>
+      <div class="form-group">
+        <label for="template-description">Description</label>
+        <input type="text" id="template-description" placeholder="Brief description">
+      </div>
+      <div class="form-group">
+        <label for="template-category">Category</label>
+        <select id="template-category">
+          <option value="general">General</option>
+          <option value="blog">Blog</option>
+          <option value="marketing">Marketing</option>
+          <option value="email">Email</option>
+          <option value="social">Social</option>
+          <option value="business">Business</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="template-content">Template Content</label>
+        <textarea id="template-content" placeholder="Enter your template content..." rows="10" required></textarea>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-outline" onclick="closeModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Template</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Upgrade Modal -->
+  <div class="modal hidden" id="upgrade-modal">
+    <div class="modal-header">
+      <h2>Upgrade Your Plan</h2>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="upgrade-content">
+      <div class="plan-card">
+        <div class="plan-header">
+          <h3>Pro Plan</h3>
+          <div class="plan-price">$19<span>/month</span></div>
+        </div>
+        <ul class="plan-features">
+          <li>✓ 100,000 AI words/month</li>
+          <li>✓ Unlimited documents</li>
+          <li>✓ Unlimited projects</li>
+          <li>✓ Priority support</li>
+          <li>✓ Advanced AI tools</li>
+          <li>✓ Export to multiple formats</li>
+        </ul>
+        <button class="btn btn-primary btn-full" onclick="showToast('Coming soon!', 'info')">Upgrade to Pro</button>
+      </div>
+      <div class="plan-card featured">
+        <div class="plan-badge">Most Popular</div>
+        <div class="plan-header">
+          <h3>Business Plan</h3>
+          <div class="plan-price">$49<span>/month</span></div>
+        </div>
+        <ul class="plan-features">
+          <li>✓ Unlimited AI words</li>
+          <li>✓ Everything in Pro</li>
+          <li>✓ Team collaboration</li>
+          <li>✓ Custom templates</li>
+          <li>✓ API access</li>
+          <li>✓ Dedicated support</li>
+        </ul>
+        <button class="btn btn-primary btn-full" onclick="showToast('Coming soon!', 'info')">Upgrade to Business</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
